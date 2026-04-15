@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import Header from "../components/Header"
 import FilterBar from "../components/FilterBar"
 import MasonryGrid from "../components/MasonryGrid"
@@ -14,6 +15,7 @@ const defaultFilters = {
 }
 
 export default function HomePage() {
+  const navigate = useNavigate()
   const [artworks, setArtworks] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -83,7 +85,7 @@ export default function HomePage() {
             <p className="text-sm text-gray-400 mb-4">
               작품 {filtered.length}개
             </p>
-            <MasonryGrid artworks={filtered} onCardClick={setSelectedArtwork} />
+            <MasonryGrid artworks={filtered} onCardClick={(artwork) => navigate(`/artwork/${artwork.id}`)} />
           </>
         )}
       </main>
