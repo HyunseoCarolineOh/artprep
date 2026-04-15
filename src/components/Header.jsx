@@ -17,11 +17,11 @@ export default function Header({ onSearch, onUploadClick, onSavedClick }) {
     <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-4">
         {/* 로고 */}
-        <a href="/" className="flex items-center gap-2 shrink-0">
-          <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
-            <span className="text-white text-sm font-bold">A</span>
-          </div>
-          <span className="font-bold text-gray-900 text-lg hidden sm:block">ArtGallery</span>
+        <a href="/" className="shrink-0">
+          <span className="text-xl italic text-[#195AE6]">
+            <span className="font-medium">Art</span>
+            <span className="font-extrabold">PREP</span>
+          </span>
         </a>
 
         {/* 검색창 */}

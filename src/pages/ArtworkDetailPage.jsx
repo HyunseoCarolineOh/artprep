@@ -56,11 +56,11 @@ export default function ArtworkDetailPage() {
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">갤러리로 돌아가기</span>
           </Link>
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-gray-900 rounded-md flex items-center justify-center">
-              <span className="text-white text-xs font-bold">A</span>
-            </div>
-            <span className="font-bold text-gray-900">ArtGallery</span>
+          <Link to="/">
+            <span className="text-xl italic text-[#195AE6]">
+              <span className="font-medium">Art</span>
+              <span className="font-extrabold">PREP</span>
+            </span>
           </Link>
           <div className="w-16" />
         </div>
