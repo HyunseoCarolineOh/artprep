@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import Header from "../components/Header"
 import FilterBar from "../components/FilterBar"
@@ -25,13 +25,27 @@ export default function HomePage() {
   const [showUpload, setShowUpload] = useState(false)
 
   useEffect(() => {
-    async function fetchArtworks() {
+    const timer = setTimeout(async () => {
       setLoading(true)
       setError(null)
-      const { data, error: fetchError } = await supabase
+
+      let query = supabase
         .from("artworks")
         .select("*")
         .order("created_at", { ascending: false })
+
+      if (filters.university !== "전체") query = query.eq("university", filters.university)
+      if (filters.type !== "전체") query = query.eq("art_type", filters.type)
+      if (filters.academyType !== "전체") query = query.eq("academy_type", filters.academyType)
+      if (filters.year !== "전체") query = query.eq("year", Number(filters.year))
+
+      if (searchQuery) {
+        query = query.or(
+          `title.ilike.%${searchQuery}%,university.ilike.%${searchQuery}%,art_type.ilike.%${searchQuery}%`
+        )
+      }
+
+      const { data, error: fetchError } = await query
 
       if (fetchError) {
         setError("작품 데이터를 불러오지 못했습니다.")
@@ -40,27 +54,9 @@ export default function HomePage() {
         setArtworks(data)
       }
       setLoading(false)
-    }
-    fetchArtworks()
-  }, [])
-
-  const filtered = useMemo(() => {
-    return artworks.filter((a) => {
-      if (filters.university !== "전체" && a.university !== filters.university) return false
-      if (filters.type !== "전체" && a.art_type !== filters.type) return false
-      if (filters.academyType !== "전체" && a.academy_type !== filters.academyType) return false
-      if (filters.year !== "전체" && String(a.year) !== filters.year) return false
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase()
-        const hit =
-          a.title.toLowerCase().includes(q) ||
-          a.university.toLowerCase().includes(q) ||
-          a.art_type.toLowerCase().includes(q)
-        if (!hit) return false
-      }
-      return true
-    })
-  }, [filters, searchQuery, artworks])
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [filters, searchQuery])
 
   return (
     <div className="min-h-screen bg-white">
@@ -83,9 +79,16 @@ export default function HomePage() {
         ) : (
           <>
             <p className="text-sm text-gray-400 mb-4">
-              작품 {filtered.length}개
+              작품 {artworks.length}개
             </p>
-            <MasonryGrid artworks={filtered} onCardClick={(artwork) => navigate(`/artwork/${artwork.id}`)} />
+            {artworks.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-24 text-gray-400">
+                <p className="text-lg">검색 결과가 없습니다</p>
+                <p className="text-sm mt-1">다른 검색어나 필터를 시도해 보세요.</p>
+              </div>
+            ) : (
+              <MasonryGrid artworks={artworks} onCardClick={(artwork) => navigate(`/artwork/${artwork.id}`)} />
+            )}
           </>
         )}
       </main>
