@@ -1,11 +1,22 @@
 import { useState, useRef, useEffect } from "react"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, X } from "lucide-react"
 import { universities, artTypes, academyTypes, years } from "../data/artworks"
 import { cn } from "../lib/utils"
 
 export default function FilterBar({ filters, onFilterChange }) {
+  const hasActiveFilter = Object.values(filters).some((v) => v !== "전체")
+
   function handleChange(key, value) {
     onFilterChange({ ...filters, [key]: value })
+  }
+
+  function handleReset() {
+    onFilterChange({
+      university: "전체",
+      type: "전체",
+      academyType: "전체",
+      year: "전체",
+    })
   }
 
   return (
@@ -35,6 +46,15 @@ export default function FilterBar({ filters, onFilterChange }) {
           value={filters.year}
           onChange={(v) => handleChange("year", v)}
         />
+        {hasActiveFilter && (
+          <button
+            onClick={handleReset}
+            className="flex items-center gap-1 text-sm px-3 py-1.5 rounded-full border border-red-200 bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
+          >
+            <X className="w-3.5 h-3.5" />
+            <span>초기화</span>
+          </button>
+        )}
       </div>
     </div>
   )

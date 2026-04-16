@@ -12,6 +12,7 @@ export default function ArtworkDetailPage() {
   const [error, setError] = useState(null)
   const [liked, setLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(0)
+  const [heartAnimate, setHeartAnimate] = useState(false)
 
   useEffect(() => {
     async function fetchArtwork() {
@@ -35,6 +36,8 @@ export default function ArtworkDetailPage() {
   }, [id])
 
   function handleLike() {
+    setHeartAnimate(true)
+    setTimeout(() => setHeartAnimate(false), 350)
     if (liked) {
       setLiked(false)
       setLikeCount((c) => c - 1)
@@ -68,9 +71,32 @@ export default function ArtworkDetailPage() {
 
       {/* 본문 */}
       {loading ? (
-        <div className="flex justify-center py-24 text-gray-400">
-          <p className="text-lg">작품을 불러오는 중...</p>
-        </div>
+        <main className="max-w-5xl mx-auto px-4 py-8">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="flex flex-col md:flex-row min-h-[60vh]">
+              <div className="md:w-3/5 skeleton min-h-64" />
+              <div className="md:w-2/5 p-6 space-y-4">
+                <div className="flex gap-2">
+                  <div className="skeleton h-8 w-16 rounded-md" />
+                  <div className="skeleton h-8 w-8 rounded-md" />
+                  <div className="skeleton h-8 w-8 rounded-md" />
+                </div>
+                <div className="skeleton h-6 w-2/3 rounded" />
+                <div className="skeleton h-4 w-full rounded" />
+                <div className="skeleton h-4 w-full rounded" />
+                <div className="skeleton h-4 w-3/4 rounded" />
+                <div className="space-y-3 mt-6">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="flex gap-3">
+                      <div className="skeleton h-4 w-20 rounded" />
+                      <div className="skeleton h-4 w-32 rounded" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
       ) : error ? (
         <div className="flex flex-col items-center justify-center py-24 text-gray-400">
           <p className="text-lg font-medium">{error}</p>
@@ -101,7 +127,7 @@ export default function ArtworkDetailPage() {
                     onClick={handleLike}
                     className={`gap-1.5 ${liked ? "border-red-300 text-red-500" : ""}`}
                   >
-                    <Heart className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
+                    <Heart className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : ""} ${heartAnimate ? "heart-pop" : ""}`} />
                     {likeCount}
                   </Button>
                   <Button variant="ghost" size="icon" title="공유">

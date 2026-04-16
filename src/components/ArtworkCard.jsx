@@ -5,9 +5,13 @@ import { Badge } from "./ui/badge"
 export default function ArtworkCard({ artwork, onClick }) {
   const [liked, setLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(artwork.like_count)
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [heartAnimate, setHeartAnimate] = useState(false)
 
   function handleLike(e) {
     e.stopPropagation() // 카드 클릭 이벤트와 분리
+    setHeartAnimate(true)
+    setTimeout(() => setHeartAnimate(false), 350)
     if (liked) {
       setLiked(false)
       setLikeCount((c) => c - 1)
@@ -26,8 +30,11 @@ export default function ArtworkCard({ artwork, onClick }) {
       <img
         src={artwork.image}
         alt={artwork.title}
-        className="w-full object-cover block transition-transform duration-300 group-hover:scale-105"
+        className={`w-full object-cover block transition-all duration-500 group-hover:scale-105 ${
+          imageLoaded ? "opacity-100" : "opacity-0"
+        }`}
         loading="lazy"
+        onLoad={() => setImageLoaded(true)}
       />
 
       {/* 호버시 오버레이 */}
@@ -46,7 +53,7 @@ export default function ArtworkCard({ artwork, onClick }) {
             className="flex items-center gap-1 bg-white rounded-full px-3 py-1.5 text-sm font-medium shadow-md hover:scale-105 transition-transform"
           >
             <Heart
-              className={`w-4 h-4 transition-colors ${liked ? "fill-red-500 text-red-500" : "text-gray-600"}`}
+              className={`w-4 h-4 transition-colors ${liked ? "fill-red-500 text-red-500" : "text-gray-600"} ${heartAnimate ? "heart-pop" : ""}`}
             />
             <span className="text-gray-800">{likeCount}</span>
           </button>
